@@ -83,7 +83,6 @@ grid_obj_xgb = RandomizedSearchCV(xgbr, parameters, cv=3,n_iter= 10,
 
 grid_obj_xgb.fit(X_train, y_train,verbose = 1)
 
-print(grid_obj_xgb.best_params_)
 
 best_random = grid_obj_xgb.best_estimator_
 
@@ -137,11 +136,6 @@ fig, ax = plt.subplots(figsize=(40, 20))
 plot_partial_dependence(xgb_model, df_train[features], features, ax=ax,
                         grid_resolution=50, n_cols=6) 
 
-# Can not get clear figure
-# fig, ax = plot_partial_dependence(xgb_model, df_train[features], features) 
-# fig.set_figwidth(8)
-# fig.set_figheight(15)
-# fig.tight_layout()
 
 
 

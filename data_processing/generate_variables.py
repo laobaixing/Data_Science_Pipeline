@@ -88,7 +88,7 @@ def add_ts_indicators(df):
     
     df["average_13_60_down"] = ((df.ma60 - df.ma13) > 0 ).astype("int64")
     df["average_13_60_down"] = ((df.shift(1).ma60 - df.shift(1).ma13) < 0).astype("int64")\
-        * df["average_13_60_down"]
+        * df["average_13_60_down"] #? should early one ma13 > ma 60
     df["average_13_60_down"] = 1-(1-df["average_13_60_down"])* \
         (1-df["average_13_60_down"].shift(1, fill_value=0))
     
@@ -136,53 +136,4 @@ def get_ext_indicator(df):
     df['trima_12_60_diff_ratio'] = (df['trima_12'] -df['trima_60'])/df['trima_60']
     
     return(df)
-
-def get_new_high(df):
-    df["new_high_price"] = 0
-    df.loc[df.index[0] , "new_high_price"] = df.loc[df.index[0] , "close"]
-    df["new_high_pos"] = 0
-    df["new_high_ind"] = "0"
-    
-    df["new_high_diff"] = 0
-    for i in range(1, len(df)):
-        if(df.loc[df.index[i], "close"]> df.loc[df.index[i-1], "new_high_price"]):
-            df.loc[df.index[i], "new_high_price"] = df.loc[df.index[i], "close"]
-            df.loc[df.index[i], "new_high_pos"] = i
-            df.loc[df.index[i], "new_high_diff"] = i- df.loc[df.index[i-1], "new_high_pos"]
-            if df.loc[df.index[i], "new_high_diff"] > 22 and df.loc[df.index[i], "new_high_diff"] <66:
-                df.loc[df.index[i], "new_high_ind"] = "1"
-            elif df.loc[df.index[i], "new_high_diff"] >= 66:
-                df.loc[df.index[i], "new_high_ind"] = "2"
-            else:
-                df.loc[df.index[i], "new_high_ind"] = "0"
-        else:
-            df.loc[df.index[i], "new_high_price"] = df.loc[df.index[i-1], 
-                                                           "new_high_price"]
-            df.loc[df.index[i], "new_high_pos"] = df.loc[df.index[i-1], 
-                                                         "new_high_pos"]
-            df.loc[df.index[i], "new_high_ind"] = "0"
-        # if df.loc[df.index[i-1],"new_high_ind"] != "0" and df.loc[df.index[i],"close"] > df.loc[df.index[i-1], "new_high_price"] and df.loc[df.index[i-1], "new_high_diff"]>1:
-        #       df.loc[df.index[i], "new_high_ind"] = df.loc[df.index[i-1],"new_high_ind"] 
-    return df
-
-def get_MACD_cross_up(df):
-    # with time index, can not use normal i anymore
-    df["MACD_cross_up"] = 0
-    for i in range(2, len(df)):
-        if df.loc[df.index[i-2], "MACD_diff"]<0 and df.loc[df.index[i-1], "MACD_diff"]>0 :
-            df.loc[df.index[i-1], "MACD_cross_up"] = 1
-            df.loc[df.index[i], "MACD_cross_up"] = 1
-    return df
- 
-def get_MACD_cross_down(df):
-    for i in range(1, len(df)):
-        df.loc[df.index[i], "MACD_cross_down"] = df.loc[df.index[i], "MACD_diff"]<0 and df.loc[df.index[i-1], "MACD_diff"]>0
-    return df
-
-def get_ave_price_13_down(df):
-    for i in range(1, len(df)):
-        df.loc[df.index[i], "average_13_down"] = df.loc[df.index[i], "close"]< df.loc[df.index[i], "ma13"] and df.loc[df.index[i-1], "close"]> df.loc[df.index[i-1], "ma13"] 
-    return df
-
-
 

@@ -14,7 +14,6 @@ Created on Fri Nov 26 21:15:59 2021
 """
 
 
-import time
 import pickle
 from tqdm import tqdm
 import os
@@ -31,29 +30,31 @@ from data_processing.generate_variables import (get_ta_lib_indicator,
 
 
 # In[Generate dependent variables and features]
-with open('data/stock_dict.pickle', 'rb') as f:
-    stock_dic = pickle.load(f)
+class ProcessStockData():
+    def dic_to_df():
+        with open('data/stock_dict.pickle', 'rb') as f:
+            stock_dic = pickle.load(f)
 
-startTime = time.time()
+        # startTime = time.time()
 
-DAYS_PRED = 5
-for count, stock in enumerate(tqdm(stock_dic)):
-    
-    df = stock_dic[stock].copy()
-    df = get_ta_lib_indicator(df)  
-    df = add_ts_indicators(df)
-    df = priceChangeForward(df, DAYS_PRED, 'close')      
-    
-    if count == 0:
-        stocks_df = df
-    else:
-        stocks_df = stocks_df.append(df)
-
-executionTime = (time.time() - startTime)
-print('Execution time in seconds:', executionTime)
-
-stocks_df = get_ext_indicator(stocks_df)
-
-print(max(stocks_df["datetime"]))
-
-stocks_df.to_csv("data/stock_price.csv")
+        DAYS_PRED = 5
+        for count, stock in enumerate(tqdm(stock_dic)):
+            
+            df = stock_dic[stock].copy()
+            df = get_ta_lib_indicator(df)  
+            df = add_ts_indicators(df)
+            df = priceChangeForward(df, DAYS_PRED, 'close')      
+            
+            if count == 0:
+                stocks_df = df
+            else:
+                stocks_df = stocks_df.append(df)
+        
+        # executionTime = (time.time() - startTime)
+        # print('Execution time in seconds:', executionTime)
+        
+        stocks_df = get_ext_indicator(stocks_df)
+        
+        # print(max(stocks_df["datetime"]))
+        
+        stocks_df.to_csv("data/stock_price.csv")
