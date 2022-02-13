@@ -1,10 +1,11 @@
 #!/usr/bin/env python
-# coding: utf-8
 
 """
 Explore the stock predictors vs. price change ratio
-
-@author: Ling
+With:
+   Boxplot
+   Scatter plot
+   histogram
 """
 
 from matplotlib import pyplot as plt
@@ -73,8 +74,6 @@ pp.close()
 
 
 
-# stocks_df.boxplot(column="price_change_forward_ratio", by = ['RSI_ind', 'MACD_ind'])
-# stocks_df.boxplot(column="price_change_forward_ratio", by = ['RSI_ind', 'ad_ind'])
 
 
 

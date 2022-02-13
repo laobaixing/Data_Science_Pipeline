@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Build the model through Mixed linear
 
@@ -6,11 +5,9 @@ Input:
     data/stock_price.csv
     
 Output:
-    
+    data/mixed_lm_val_pred.csv
+    data/mixed_lm_tra_pred.csv	
 
-Created on Sat Nov 27 10:43:58 2021
-
-@author: Ling
 """
 
 import pandas as pd
@@ -34,7 +31,7 @@ df_train = stocks_df[(stocks_df['datetime'] <
 df_val = stocks_df[(stocks_df['datetime'] >= 
                     datetime.strptime('2021-3-31', "%Y-%m-%d").date())]
 
-# use its own normalized base line to represent recent emotion.
+# Normalize RSI
 df_train['RSI_cen'] = df_train.groupby('symbol').RSI.transform(lambda x: x - x.mean())
 df_val['RSI_cen'] = df_val.groupby('symbol').RSI.transform(lambda x: x - x.mean())
 

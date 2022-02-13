@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Generate dependent variables and features from raw stock information
 
@@ -8,9 +7,6 @@ Input:
 Output:
     data/stock_price.csv
     
-Created on Fri Nov 26 21:15:59 2021
-
-@author: Ling
 """
 
 

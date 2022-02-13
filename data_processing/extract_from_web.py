@@ -5,9 +5,6 @@ This code define the functions for extracting data from XXX website
  3. Change json to table
  4. merge and append the dataset
 
-Created on Fri Nov 26 13:05:13 2021
-
-@author: Shiyun Ling
 """
 
 import requests

@@ -1,5 +1,14 @@
-#!/usr/bin/env python
-# coding: utf-8
+"""
+Build the model through XGBoost
+
+Input:
+    data/stock_price.csv
+    
+Output:
+    data/xgboost_val_pred.csv
+    data/xgboost_tra_pred.csv	
+
+"""
 
 from matplotlib import pyplot as plt
 import pandas as pd

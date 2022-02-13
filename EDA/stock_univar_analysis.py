@@ -1,10 +1,9 @@
 #!/usr/bin/env python
-# coding: utf-8
-
 """
-Univarate analysis
+Bivarate analysis
+1. Check the relationship between dependent variable and predictors
+2. Generate summary table
 
-Summary table
 """
 
 import pandas as pd
@@ -23,7 +22,7 @@ os.chdir(basic_folder)
 stocks_df = pd.read_csv("data/stock_price.csv")
 
 # **********************************
-# In[Univariate analysis]:
+# In[bivariate analysis]:
 # ***********************************
 data_types = stocks_df.dtypes.astype(str) # need to change to string for isin
 

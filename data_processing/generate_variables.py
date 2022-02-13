@@ -1,11 +1,10 @@
 """
-This code generate dependent variables and features
+This code generate dependent variable and features
 1. Generate the dependent variables: price change in five days
 2. Generate the predictors 
-
-Created on Fri Nov 26 13:32:00 2021
-
-@author: George Ling
+3. Source of predictors
+   a. From talib
+   b. Calculate by the code
 
 """
 import pandas as pd
