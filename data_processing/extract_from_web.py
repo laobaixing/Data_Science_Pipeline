@@ -46,13 +46,12 @@ def get_TD_stock_info(stock, period, history_data_link, quote_link, td_consumer_
         today_info = df_quote.loc[ ['openPrice', 'highPrice', 'lowPrice', 
                                     'regularMarketLastPrice', 'totalVolume'], stock]
     today_info = today_info.to_list()
-    df = df_history.append({"open":today_info[0], "high":today_info[1], 
+    df = df_history.append({"datetime":pd.to_datetime(date.today()).date(), 
+                            "open":today_info[0], "high":today_info[1], 
                             "low":today_info[2], 
-                            "close": today_info[3], "volume": today_info[4], 
-                            "datetime":pd.to_datetime(date.today()).date(), 
+                            "close": today_info[3], "volume": today_info[4],                             
                             "symbol":stock}, ignore_index=True)
     
-    df.index = df["datetime"]  
     print("The most recent date is:" + str(max(df["datetime"])))
     
     return df
