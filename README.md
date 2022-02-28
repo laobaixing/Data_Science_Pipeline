@@ -75,7 +75,7 @@ Project is: _in progress_.
 
 Room for improvement:
 - Upload requirement.txt to help the installation
-- upload the XGBoost code for Luigi
+- Upload the XGBoost code for Luigi
 - Upload the ARIMA code for Luigi
 - Upload the LSTM code for Luigi
 
