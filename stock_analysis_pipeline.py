@@ -94,5 +94,6 @@ class ModelDashBoard(luigi.Task):
             out_file.write('Complete')
 
 if __name__ == '__main__':
-    luigi.build([BivarAnalysis(), DataDashBoard(), ModelDashBoard()]) # 
+    luigi.build([BivarAnalysis(), DataDashBoard(), ModelDashBoard()],
+                workers=4) # 
     # luigi.run()

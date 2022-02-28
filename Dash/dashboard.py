@@ -89,7 +89,7 @@ class StockDashBoard():
                 df = df[(df['datetime'] > start) & (df['datetime'] < end)] 
                 traces.append(go.Scatter(x= df.index, y = df.close, name= tic+' close'))
                 if i == 0:
-                    traces.append(go.Bar(x= df.index, y = df.volume,opacity=0.5,
+                    traces.append(go.Bar(x= df.index, y = df.volume,opacity=0.65,
                                      name= tic+' volume'))
                 
             fig = make_subplots(specs=[[{"secondary_y": True}]])
