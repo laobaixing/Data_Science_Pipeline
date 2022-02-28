@@ -49,6 +49,9 @@
 ![Luigi workflow screenshot](./img/luigi_workflowD3.png)
 - Stock chart
 ![stock chart screenshot](./img/stock_chart.png)
+- Residual plots   
+Apparently the model results are not good enough.
+![residual plot screenshot](./img/Residuals.png)
 
 
 
