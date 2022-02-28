@@ -51,19 +51,16 @@
 ## Setup
 1. Clone the Github
 2. Install the necessary packages
-3. Run: luigid --port 8082 in a terminal. This command line will start a Luigi. 
-4. Run: python stock_analysis_pipeline.py in the stock_analyis folder
-5. Look at:
-   - Luigi at localhost:8082;
-   - stock chart at localhost:8050;
-   - model evaluation at localhost:8000
+
 
 
 ## Usage
-How does one go about using it?
-Provide various use cases and code examples here.
-
-`write-your-code-here`
+1. Run: luigid --port 8082 in a terminal. This command line will start a Luigi. 
+2. Run: python stock_analysis_pipeline.py in the stock_analyis folder
+3. Look at:
+   - Luigi at localhost:8082;
+   - stock chart at localhost:8050;
+   - model evaluation at localhost:8000
 
 
 ## Project Status
