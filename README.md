@@ -84,6 +84,7 @@ Room for improvement:
 - Upload the LSTM code for Luigi
 
 To do:
+- Move the pipeline AWS or GCP
 - Add more model evaluation methods
 - Add NLP analysis on Stock 10-K, 10-Q report
 
