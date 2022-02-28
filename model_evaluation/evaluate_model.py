@@ -16,9 +16,9 @@ from sklearn.metrics import mean_squared_error
 class ModelEvaluation():
     def __init__(self, val_pred_file = None, tra_pred_file = None):
         if val_pred_file:
-            self.val_predict = pd.read_csv(val_pred_file) #"data/mixed_lm_val_pred.csv"
+            self.val_predict = pd.read_csv(val_pred_file)
         if tra_pred_file:
-            self.tra_predict = pd.read_csv(tra_pred_file) #"data/mixed_lm_tra_pred.csv"
+            self.tra_predict = pd.read_csv(tra_pred_file) 
     
     def RMSE(self, output_file):
     
@@ -43,7 +43,7 @@ class ModelEvaluation():
                                 'price_change_ratio_std':
                                     [self.tra_predict['price_change_forward_ratio'].std(),
                                      self.val_predict['price_change_forward_ratio'].std()]})
-        with pd.ExcelWriter(output_file) as writer:  #'output/stock_mixed_model_evaluation.xlsx'
+        with pd.ExcelWriter(output_file) as writer: 
             rmse_tb.to_excel(writer, sheet_name='RMSE', index=True)
 
 
@@ -64,23 +64,42 @@ class ModelEvaluation():
         from dash import Dash, dcc, html
         import plotly.express as px
         
-        app = Dash()  
+        app = Dash()
         
-        fig = px.scatter(self.val_predict, x="price_change_forward_ratio", 
-                         y="prediction", 
+        self.val_predict['resid'] = self.val_predict["price_change_forward_ratio"] - \
+                                self.val_predict['prediction']
+                                
+        self.tra_predict['resid'] = self.tra_predict["price_change_forward_ratio"] - \
+                                        self.tra_predict['prediction']
+        
+        fig_val = px.scatter(self.val_predict, x="price_change_forward_ratio", 
+                         y="resid", 
                          labels={
                      "price_change_forward_ratio": "5 days price change ratio"}
-                        )        
+                        )   
+        fig_tra = px.scatter(self.tra_predict, x="price_change_forward_ratio", 
+                         y="resid", 
+                         labels={
+                     "price_change_forward_ratio": "5 days price change ratio"}
+                        ) 
        
         app.layout = html.Div([
             dcc.Tabs([
+                dcc.Tab(label = 'Training Residuals', children = [
+                html.Div([
+                    dcc.Graph(
+                        id='tra_resid',
+                        figure= fig_tra
+                    )
+                    ])
+                ]),
                 dcc.Tab(label = 'Validation Residuals', children = [
                 html.Div([
                     dcc.Graph(
-                        id='my_graph',
-                        figure= fig
+                        id='val_resid',
+                        figure= fig_val
                     )
-                ])
+                    ])
                 ])
             ])
         ])
