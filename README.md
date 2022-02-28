@@ -34,7 +34,7 @@
 - Python Dash
 
 
-## Modules in the Pipeline
+## Work flow
 - Data processing
   - Data extraction
   - Feature engineering
@@ -44,6 +44,9 @@
 
 
 ## Screenshots
+- Luigi management
+![Luigi management screenshot](./img/luigi.png)
+![Luigi workflow screenshot](./img/luigi_workflowD3.png)
 - Stock chart
 ![stock chart screenshot](./img/stock_chart.png)
 
@@ -72,7 +75,7 @@ Project is: _in progress_.
 
 Room for improvement:
 - Upload requirement.txt to help the installation
-- upload the XGBoost code for Luigi
+- Upload the XGBoost code for Luigi
 - Upload the ARIMA code for Luigi
 - Upload the LSTM code for Luigi
 
