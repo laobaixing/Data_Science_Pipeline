@@ -48,9 +48,9 @@
 - Luigi management
 <img src = ./img/luigi.png width=90% height=90%>
 <img src = ./img/luigi_workflowD3.png width=90% height=90%>
-- Stock chart
+- Stock chart demonstrated by Python Dash
 <img src = ./img/stock_chart.png width=90% height=90%>
-- Residual plots   
+- Residual plots demonstrated by Python Dash with Tabs <br />   
 Apparently the model results are not good enough.
 <img src =./img/Residuals.png width=90% height=90%>
 
