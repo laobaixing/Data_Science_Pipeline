@@ -44,7 +44,8 @@
 
 
 ## Screenshots
-![Example screenshot](./img/screenshot.png)
+- Stock chart
+![stock chart screenshot](./img/stock_chart.png)
 
 
 
@@ -77,7 +78,7 @@ Room for improvement:
 
 To do:
 - Add more model evaluation methods
-- Feature to be added 2
+
 
 
 
