@@ -1,5 +1,5 @@
-# stock_analysis
-> Outline a brief description of your project.
+# stock analysis
+> This project builds a pipeline to automatically update and analyze stock. It manages the whole data processing, analyzing and modelling through Luigi and demonstrates the result through Dash and other methods.
 
 
 ## Table of Contents
@@ -11,9 +11,7 @@
 * [Usage](#usage)
 * [Project Status](#project-status)
 * [Room for Improvement](#room-for-improvement)
-* [Acknowledgements](#acknowledgements)
-* [Contact](#contact)
-<!-- * [License](#license) -->
+
 
 
 ## General Information
@@ -25,9 +23,15 @@
 
 
 ## Technologies Used
-- Tech 1 - version 1.0
-- Tech 2 - version 2.0
-- Tech 3 - version 3.0
+- Python 3.0
+- Statistical and machine learning
+  - Linear regression
+  - Mixed model
+  - XGBoost (upload soon)
+  - ARIMA (upload soon)
+  - LSTM (upload soon)
+- Luigi
+- Python Dash
 
 
 ## Features
@@ -39,7 +43,7 @@ List the ready features here:
 
 ## Screenshots
 ![Example screenshot](./img/screenshot.png)
-<!-- If you have screenshots you'd like to share, include them here. -->
+
 
 
 ## Setup
