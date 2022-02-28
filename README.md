@@ -36,8 +36,11 @@
 
 ## Modules in the Pipeline
 - Data processing
-- Awesome feature 2
-- Awesome feature 3
+  - Data extraction
+  - Feature engineering
+- Model building
+- Model evaluation
+- Visualization
 
 
 ## Screenshots
@@ -46,9 +49,14 @@
 
 
 ## Setup
-What are the project requirements/dependencies? Where are they listed? A requirements.txt or a Pipfile.lock file perhaps? Where is it located?
-
-Proceed to describe how to install / setup one's local environment / get started with the project.
+1. Clone the Github
+2. Install the necessary packages
+3. Run: luigid --port 8082 in a terminal. This command line will start a Luigi. 
+4. Run: python stock_analysis_pipeline.py in the stock_analyis folder
+5. Look at:
+   - Luigi at localhost:8082;
+   - stock chart at localhost:8050;
+   - model evaluation at localhost:8000
 
 
 ## Usage
@@ -71,7 +79,7 @@ Room for improvement:
 - Upload the LSTM code for Luigi
 
 To do:
-- Feature to be added 1
+- Add more model evaluation methods
 - Feature to be added 2
 
 
