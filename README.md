@@ -51,7 +51,7 @@
 ![stock chart screenshot](./img/stock_chart.png)
 - Residual plots   
 Apparently the model results are not good enough.
-![residual plot screenshot](./img/Residuals.png)
+![residual plot screenshot]<img src =./img/Residuals.png width=80% height=80%>
 
 
 
