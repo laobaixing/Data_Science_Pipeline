@@ -1,5 +1,5 @@
 # stock analysis
-> This project builds a pipeline to automatically update and analyze stock. It manages the whole data processing, analyzing and modelling through Luigi and demonstrates the result through Dash and other methods.
+> This project builds a pipeline to automatically update and analyze stock. It manages the whole data processing, analyzing and modeling through Luigi and demonstrates the result through Dash and other methods.
 
 
 ## Table of Contents
@@ -35,7 +35,7 @@
 
 
 ## Modules in the Pipeline
-- Awesome feature 1
+- Data processing
 - Awesome feature 2
 - Awesome feature 3
 
