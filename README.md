@@ -24,14 +24,14 @@
 
 ## Technologies Used
 - Python 3.0
+- Luigi
+- Python Dash
 - Statistical and machine learning
   - Linear regression
   - Mixed model
   - XGBoost (upload soon)
   - ARIMA (upload soon)
   - LSTM (upload soon)
-- Luigi
-- Python Dash
 
 
 ## Work flow
