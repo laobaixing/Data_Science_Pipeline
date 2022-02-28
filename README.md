@@ -45,13 +45,13 @@
 
 ## Screenshots
 - Luigi management
-![Luigi management screenshot](./img/luigi.png)
-![Luigi workflow screenshot](./img/luigi_workflowD3.png)
+<img src = ./img/luigi.png width=90% height=90%>
+<img src = ./img/luigi_workflowD3.png width=90% height=90%>
 - Stock chart
-![stock chart screenshot](./img/stock_chart.png)
+<img src = ./img/stock_chart.png width=90% height=90%>
 - Residual plots   
 Apparently the model results are not good enough.
-![residual plot screenshot]<img src =./img/Residuals.png width=80% height=80%>
+<img src =./img/Residuals.png width=90% height=90%>
 
 
 
