@@ -12,6 +12,7 @@ from data_processing.get_TD_data import ExtractTD
 from EDA.stock_bivar_analysis import StockBivariateAnalysis
 from Dash.dashboard import StockDashBoard
 from model_building.mixed_LM import MixedLM
+from model_building.stock_xgboost import XGBoostStock
 from model_evaluation.evaluate_model import ModelEvaluation
 
 class GetStockData(luigi.Task):   
@@ -35,6 +36,7 @@ class GetStockData(luigi.Task):
 class ProcessData(luigi.Task):
     def requires(self):
         return GetStockData()
+        # return None
     
     def output(self):
         return luigi.LocalTarget("log/ProcessData_%s.txt" 
@@ -81,6 +83,22 @@ class DataDashBoard(luigi.Task):
         with self.output().open('w') as out_file:
             out_file.write('Complete')
 
+class XGBoostModel(luigi.Task):
+    def requires(self):
+        return ProcessData()
+    
+    def output(self):
+        return luigi.LocalTarget('log/XGBoostModel_%s.txt' 
+                                 % datetime.now().strftime("%Y_%m_%d_%H_%M"))
+    
+    def run(self):
+        task = XGBoostStock()
+        task.xgboost_stock(input_data_file = 'data/stock_price.csv')
+        
+        with self.output().open('w') as out_file:
+            out_file.write('Complete')
+                                 
+
 class MixedModel(luigi.Task):
     def requires(self):
         return ProcessData()
@@ -98,7 +116,7 @@ class MixedModel(luigi.Task):
 
 class ModelDashBoard(luigi.Task):
     def requires(self):
-        return MixedModel()
+        return [MixedModel(), XGBoostModel(), BivarAnalysis()]
     
     def output(self):
         return luigi.LocalTarget('log/ModelDashBoard_%s.txt' 
@@ -113,7 +131,6 @@ class ModelDashBoard(luigi.Task):
             out_file.write('Complete')
 
 if __name__ == '__main__':
-    luigi.build([GetStockData(), BivarAnalysis(), 
-                 DataDashBoard(), ModelDashBoard()],
+    luigi.build([DataDashBoard(), ModelDashBoard()],
                 workers=4) # 
     # luigi.run()
