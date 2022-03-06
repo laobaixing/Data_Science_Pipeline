@@ -8,14 +8,33 @@ import luigi
 from datetime import datetime
 
 from data_processing.process_data import ProcessStockData
+from data_processing.get_TD_data import ExtractTD
 from EDA.stock_bivar_analysis import StockBivariateAnalysis
 from Dash.dashboard import StockDashBoard
 from model_building.mixed_LM import MixedLM
 from model_evaluation.evaluate_model import ModelEvaluation
 
-class ProcessData(luigi.Task):
+class GetStockData(luigi.Task):   
     def requires(self):
         return None
+    
+    def output(self):
+        return luigi.LocalTarget("log/GetStockData_%s.txt" 
+                                 % datetime.now().strftime("%Y_%m_%d_%H_%M"))
+    
+    def run(self):
+        stocks = ['$COMPX','TTD', 'AMD','MDB','TSLA', "AMZN", "TWLO","GOOG","NFLX","DIS",
+                  "TSM","CRM", "SHOP","DOCU","ZS", "PLTR", "YEXT", "INTC", "MSFT", "FB", 
+        	  "QCOM","AAPL","XOM","NVDA",'TWTR', 'SNAP', 'ADBE', 'INTU','TEAM','$SPX.X']
+        task = ExtractTD()
+        task.extract_TD_data(stocks, output_file = "data/stock_dict.pickle")
+        
+        with self.output().open('w') as out_file:
+            out_file.write('Complete')
+
+class ProcessData(luigi.Task):
+    def requires(self):
+        return GetStockData()
     
     def output(self):
         return luigi.LocalTarget("log/ProcessData_%s.txt" 
@@ -94,6 +113,7 @@ class ModelDashBoard(luigi.Task):
             out_file.write('Complete')
 
 if __name__ == '__main__':
-    luigi.build([BivarAnalysis(), DataDashBoard(), ModelDashBoard()],
+    luigi.build([GetStockData(), BivarAnalysis(), 
+                 DataDashBoard(), ModelDashBoard()],
                 workers=4) # 
     # luigi.run()
