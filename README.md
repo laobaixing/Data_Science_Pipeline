@@ -1,5 +1,5 @@
 # Stock Analysis
-> This project builds a pipeline to automatically update and analyze stock. It manages the whole data processing, analyzing and modeling through Luigi and demonstrates the result through Dash and other methods.
+> This project builds a pipeline to automatically update and analyze stock. It manages the whole data processing, analyzing and modeling through Luigi and demonstrates the results through Python Dash and other methods. Please note, the aim of the project is to provide a pipeline for general data science analysis instead of a solution for stock trading.
 
 
 ## Table of Contents
@@ -15,23 +15,24 @@
 
 
 ## General Information
-- Provide general information about your project here.
-- What problem does it (intend to) solve?
-- What is the purpose of your project?
-- Why did you undertake it?
+- The aim of this project is to build a pipeline for automatic data science analysis. 
+- It is used as an example for general data science analysis instead of a solution for stock trading.
+- So optimizing the model performance on stock price is not the high priority.
+- However, although it is not suitable for high frequency trading, it could be a good framework for people to manage their tools/metrics for mid term stock trading.
+
 
 
 
 ## Technologies Used
 - Python 3.0
+- Luigi
+- Python Dash
 - Statistical and machine learning
   - Linear regression
   - Mixed model
   - XGBoost (upload soon)
   - ARIMA (upload soon)
   - LSTM (upload soon)
-- Luigi
-- Python Dash
 
 
 ## Work flow
@@ -45,10 +46,13 @@
 
 ## Screenshots
 - Luigi management
-![Luigi management screenshot](./img/luigi.png)
-![Luigi workflow screenshot](./img/luigi_workflowD3.png)
-- Stock chart
-![stock chart screenshot](./img/stock_chart.png)
+<img src = ./img/luigi.png width=90% height=90%>
+<img src = ./img/luigi_workflowD3.png width=90% height=90%>
+- Stock chart demonstrated by Python Dash
+<img src = ./img/stock_chart.png width=90% height=90%>
+- Residual plots demonstrated by Python Dash with Tabs <br />   
+Apparently the model results are not good enough.
+<img src =./img/Residuals.png width=90% height=90%>
 
 
 
@@ -80,7 +84,9 @@ Room for improvement:
 - Upload the LSTM code for Luigi
 
 To do:
+- Move the pipeline AWS or GCP
 - Add more model evaluation methods
+- Add NLP analysis on Stock 10-K, 10-Q report
 
 
 
