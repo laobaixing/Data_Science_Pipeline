@@ -30,7 +30,7 @@
 - Statistical and machine learning
   - Linear regression
   - Mixed model
-  - XGBoost (upload soon)
+  - XGBoost
   - ARIMA (upload soon)
   - LSTM (upload soon)
 
