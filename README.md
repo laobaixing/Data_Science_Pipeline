@@ -79,7 +79,6 @@ Project is: _in progress_.
 
 Room for improvement:
 - Add some exploratory data analysis (EDA)
-- Upload the XGBoost code for Luigi
 - Upload the ARIMA code for Luigi
 - Upload the LSTM code for Luigi
 
