@@ -111,6 +111,7 @@ class XGBoostStock():
         sorted_idx = best_random.feature_importances_.argsort()
         plt.barh(np.array(features)[sorted_idx], best_random.feature_importances_[sorted_idx])
         plt.xlabel("Xgboost Feature Importance")
+        plt.savefig("assets/xgb_feature_importance.png", bbox_inches='tight')
         
         # In[Use SHAP]
         # use SHAP as feature importance
@@ -118,13 +119,20 @@ class XGBoostStock():
         shap_values = explainer.shap_values(X_train)
         
         # variable importace bar
-        shap.summary_plot(shap_values, df_train[features], plot_type="bar")
+        shap.summary_plot(shap_values, df_train[features], plot_type="bar",
+                          show = False)
+        from matplotlib import pyplot as plt
+        plt.savefig("assets/xgb_shap_feature_importance.png", bbox_inches='tight',
+                    pad_inches=0.2, dpi=300)
         
         # SHAP value bar
-        shap.summary_plot(shap_values, df_train[features])
+        shap.summary_plot(shap_values, df_train[features], show = False)
+        plt.savefig("assets/xgb_shap_value.png", bbox_inches='tight',
+                    pad_inches=0.2)
         
-        # Dependence plot from SHAP
-        shap.dependence_plot("RSI", shap_values,df_train[features])
+        # Partial dependence plot from SHAP
+        shap.dependence_plot("RSI", shap_values,df_train[features], show = False)
+        plt.savefig("assets/xgb_shap_RSI_PDP.png")
         
         
         # In[Remodel with best parameters]

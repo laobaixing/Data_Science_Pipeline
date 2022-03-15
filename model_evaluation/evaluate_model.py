@@ -14,7 +14,8 @@ import numpy as np
 from sklearn.metrics import mean_squared_error
 
 class ModelEvaluation():
-    def __init__(self, val_pred_file = None, tra_pred_file = None):
+    def __init__(self, model, val_pred_file = None, tra_pred_file = None):
+        self.model = model
         if val_pred_file:
             self.val_predict = pd.read_csv(val_pred_file)
         if tra_pred_file:
@@ -60,7 +61,7 @@ class ModelEvaluation():
         with pd.ExcelWriter('output/stock_mixed_model_evaluation.xlsx', mode="a") as writer:  
             cor_tb.to_excel(writer, sheet_name='Cor_pred_ori_depend', index=True)                
 
-    def residual(self):
+    def residual(self, port):
         from dash import Dash, dcc, html
         import plotly.express as px
         
@@ -72,39 +73,97 @@ class ModelEvaluation():
         self.tra_predict['resid'] = self.tra_predict["price_change_forward_ratio"] - \
                                         self.tra_predict['prediction']
         
-        fig_val = px.scatter(self.val_predict, x="price_change_forward_ratio", 
+        fig_val_resid_return = px.scatter(self.val_predict, x="price_change_forward_ratio", 
                          y="resid", 
                          labels={
-                     "price_change_forward_ratio": "5 days price change ratio"}
+                     "price_change_forward_ratio": "Five days return"}
                         )   
-        fig_tra = px.scatter(self.tra_predict, x="price_change_forward_ratio", 
+        fig_val_resid = px.histogram(self.val_predict, x= "resid")
+        
+        
+        fig_tra_resid_return = px.scatter(self.tra_predict, x="price_change_forward_ratio", 
                          y="resid", 
                          labels={
-                     "price_change_forward_ratio": "5 days price change ratio"}
-                        ) 
+                     "price_change_forward_ratio": "Five days return"}
+                        )
+        fig_tra_resid = px.histogram(self.tra_predict, x= "resid", 
+                                     labels = {
+                                         "resid" : "model residuals"})
        
-        app.layout = html.Div([
-            dcc.Tabs([
-                dcc.Tab(label = 'Training Residuals', children = [
-                html.Div([
-                    dcc.Graph(
-                        id='tra_resid',
-                        figure= fig_tra
-                    )
-                    ])
-                ]),
-                dcc.Tab(label = 'Validation Residuals', children = [
-                html.Div([
-                    dcc.Graph(
-                        id='val_resid',
-                        figure= fig_val
-                    )
+        if self.model == "Mixed":
+            app.layout = html.Div([
+                html.H3(self.model + ' Model Evaluation', style={'paddingRight':'30px'}),
+                dcc.Tabs([
+                    dcc.Tab(label = 'Training Residuals', children = [
+                    html.Div([
+                        dcc.Graph(
+                            id='tra_resid_return',
+                            figure= fig_tra_resid_return
+                        ),
+                        
+                        dcc.Graph(
+                            id='tra_resid',
+                            figure= fig_tra_resid
+                        )
+                        
+                        ])
+                    ]),
+                    dcc.Tab(label = 'Validation Residuals', children = [
+                    html.Div([
+                        dcc.Graph(
+                            id='val_resid_return',
+                            figure= fig_val_resid_return
+                        ),
+                        
+                        dcc.Graph(
+                            id='val_resid',
+                            figure= fig_val_resid
+                        )
+                        
+                        ])
                     ])
                 ])
             ])
-        ])
         
-        app.run_server(port = 8000)
+        if self.model == "XGBoost":
+            app.layout = html.Div([
+                html.H3(self.model + ' Model Evaluation', style={'paddingRight':'30px'}),
+                dcc.Tabs([
+                    dcc.Tab(label = 'Training Residuals', children = [
+                    html.Div([
+                        dcc.Graph(
+                            id='tra_resid_return',
+                            figure= fig_tra_resid_return
+                        ),
+                        
+                        dcc.Graph(
+                            id='tra_resid',
+                            figure= fig_tra_resid
+                        )
+                        ])
+                    ]),
+                    dcc.Tab(label = 'Validation Residuals', children = [
+                    html.Div([
+                        dcc.Graph(
+                            id='val_resid_return',
+                            figure= fig_val_resid_return
+                        ),
+                        
+                        dcc.Graph(
+                            id='val_resid',
+                            figure= fig_val_resid
+                        )
+                        ])
+                    ]),
+                    dcc.Tab(label = 'Feature importance', children = [
+                    html.Div([
+                        html.Img(src='/assets/xgb_shap_feature_importance.png')
+                        ])
+                    ])
+                ])
+            ])
+        
+        app.run_server(port = port)
 
     
 

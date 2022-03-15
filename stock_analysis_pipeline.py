@@ -14,6 +14,7 @@ from Dash.dashboard import StockDashBoard
 from model_building.mixed_LM import MixedLM
 from model_building.stock_xgboost import XGBoostStock
 from model_evaluation.evaluate_model import ModelEvaluation
+from multiprocessing import Process
 
 class GetStockData(luigi.Task):   
     def requires(self):
@@ -35,8 +36,8 @@ class GetStockData(luigi.Task):
 
 class ProcessData(luigi.Task):
     def requires(self):
-        return GetStockData()
-        # return None
+        # return GetStockData()
+        return None
     
     def output(self):
         return luigi.LocalTarget("log/ProcessData_%s.txt" 
@@ -116,21 +117,35 @@ class MixedModel(luigi.Task):
 
 class ModelDashBoard(luigi.Task):
     def requires(self):
-        return [MixedModel(), XGBoostModel(), BivarAnalysis()]
+        # return [MixedModel(), XGBoostModel(), BivarAnalysis()]
+        return None
     
     def output(self):
         return luigi.LocalTarget('log/ModelDashBoard_%s.txt' 
                                  % datetime.now().strftime("%Y_%m_%d_%H_%M"))
     
     def run(self):
-        task = ModelEvaluation("data/mixed_lm_val_pred.csv", 
+        
+        mix_task = ModelEvaluation("Mixed", 
+                                   "data/mixed_lm_val_pred.csv", 
                                "data/mixed_lm_tra_pred.csv" )
-        task.residual()
+        
+        xgb_task = ModelEvaluation("XGBoost",
+                                   "data/xgboost_val_pred.csv", 
+                               "data/xgboost_tra_pred.csv" )
+        
+        p1 = Process(target = mix_task.residual, args = (8000,))
+        p2 = Process(target = xgb_task.residual, args = (8010, ))
+        
+        p1.start()
+        p2.start()
         
         with self.output().open('w') as out_file:
             out_file.write('Complete')
 
+
+
 if __name__ == '__main__':
-    luigi.build([DataDashBoard(), ModelDashBoard()],
+    luigi.build([ ModelDashBoard()],
                 workers=4) # 
-    # luigi.run()
+    # luigi.run() DataDashBoard(),
