@@ -11,10 +11,12 @@ import pandas as pd
 import talib
 import math
 
+
 # In[Generate dependent variables]
-def priceChangeForward(df, time_lag, price):
+def priceReturn(df, time_lag, price):
     df['price_change_forward'] = -df[price].diff(-5)
-    df['price_change_forward_ratio']= df['price_change_forward']/df[price]
+    df['price_return']= df['price_change_forward']/df[price]
+    df['log_price_return'] = [math.log(x + 1) for x in df['price_return']]
     return df
 
 

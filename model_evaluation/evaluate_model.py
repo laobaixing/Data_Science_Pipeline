@@ -26,10 +26,10 @@ class ModelEvaluation():
         # In[RMSE]
         
         val_rmse = round(mean_squared_error(self.val_predict['prediction'], 
-                                       self.val_predict.price_change_forward_ratio,
+                                       self.val_predict.price_return,
                                        squared = False), 4)
         tra_rmse = round(mean_squared_error(self.tra_predict['prediction'], 
-                                       self.tra_predict.price_change_forward_ratio,
+                                       self.tra_predict.price_return,
                                        squared = False),4)
         
         rmse_tb = pd.DataFrame({'dataset':["train", "validation"],
@@ -39,11 +39,11 @@ class ModelEvaluation():
                                 'pred_std':[self.tra_predict['prediction'].std(),
                                              self.val_predict['prediction'].std()],
                                 'price_change_ratio_mean':
-                                    [self.tra_predict['price_change_forward_ratio'].mean(),
-                                     self.val_predict['price_change_forward_ratio'].mean()],
+                                    [self.tra_predict['price_return'].mean(),
+                                     self.val_predict['price_return'].mean()],
                                 'price_change_ratio_std':
-                                    [self.tra_predict['price_change_forward_ratio'].std(),
-                                     self.val_predict['price_change_forward_ratio'].std()]})
+                                    [self.tra_predict['price_return'].std(),
+                                     self.val_predict['price_return'].std()]})
         with pd.ExcelWriter(output_file) as writer: 
             rmse_tb.to_excel(writer, sheet_name='RMSE', index=True)
 
@@ -52,9 +52,9 @@ class ModelEvaluation():
 
         # In[Correlation between the prediction and the price change ratio]
         val_cor = np.corrcoef(self.val_predict['prediction'], 
-                          self.val_predict['price_change_forward_ratio'])
+                          self.val_predict['price_return'])
         tra_cor = np.corrcoef(self.tra_predict['prediction'], 
-                          self.tra_predict['price_change_forward_ratio'])
+                          self.tra_predict['price_return'])
         
         cor_tb = pd.DataFrame({'dataset':["train", "validation"],
                                 'cor_pred_ori':[tra_cor[0,1], val_cor[0,1]]})
@@ -65,26 +65,27 @@ class ModelEvaluation():
         from dash import Dash, dcc, html
         import plotly.express as px
         
+        
         app = Dash()
         
-        self.val_predict['resid'] = self.val_predict["price_change_forward_ratio"] - \
+        self.val_predict['resid'] = self.val_predict["price_return"] - \
                                 self.val_predict['prediction']
                                 
-        self.tra_predict['resid'] = self.tra_predict["price_change_forward_ratio"] - \
+        self.tra_predict['resid'] = self.tra_predict["price_return"] - \
                                         self.tra_predict['prediction']
         
-        fig_val_resid_return = px.scatter(self.val_predict, x="price_change_forward_ratio", 
+        fig_val_resid_return = px.scatter(self.val_predict, x="price_return", 
                          y="resid", 
                          labels={
-                     "price_change_forward_ratio": "Five days return"}
+                     "price_return": "Five days return"}
                         )   
         fig_val_resid = px.histogram(self.val_predict, x= "resid")
         
         
-        fig_tra_resid_return = px.scatter(self.tra_predict, x="price_change_forward_ratio", 
+        fig_tra_resid_return = px.scatter(self.tra_predict, x="price_return", 
                          y="resid", 
                          labels={
-                     "price_change_forward_ratio": "Five days return"}
+                     "price_return": "Five days return"}
                         )
         fig_tra_resid = px.histogram(self.tra_predict, x= "resid", 
                                      labels = {
@@ -157,7 +158,8 @@ class ModelEvaluation():
                     ]),
                     dcc.Tab(label = 'Feature importance', children = [
                     html.Div([
-                        html.Img(src='/assets/xgb_shap_feature_importance.png')
+                        html.Img(src='/assets/xgb_shap_feature_importance.png',
+                                 style={'height':'50%', 'width':'50%'})
                         ])
                     ])
                 ])

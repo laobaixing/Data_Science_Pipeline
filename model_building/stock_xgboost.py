@@ -10,7 +10,6 @@ Output:
 
 """
 
-from matplotlib import pyplot as plt
 import pandas as pd
 import numpy as np
 from datetime import datetime
@@ -50,14 +49,14 @@ class XGBoostStock():
                     'ma60_diff_ratio', 'ma200_diff_ratio','B_upper_band_diff',
                     'B_lower_band_diff'] 
                 
-        df_train = df_train.dropna(subset = ['price_change_forward_ratio'] + features )
-        df_val = df_val.dropna(subset = ['price_change_forward_ratio'] + features )
+        df_train = df_train.dropna(subset = ['price_return'] + features )
+        df_val = df_val.dropna(subset = ['price_return'] + features )
               
         X_train = np.array(df_train[features])
-        y_train = np.array(df_train['price_change_forward_ratio'])
+        y_train = np.array(df_train['price_return'])
         
         X_val = np.array(df_val[features])
-        y_val = np.array(df_val['price_change_forward_ratio'])
+        y_val = np.array(df_val['price_return'])
         
         parameters = {'objective':['reg:squarederror'],
                       'booster':['gbtree'], 
@@ -93,12 +92,12 @@ class XGBoostStock():
         
         val_predict = pd.DataFrame({'prediction':val_pred})
         val_predict = pd.concat([df_val[['datetime', 
-                                         'price_change_forward_ratio']].reset_index(drop=True),
+                                         'price_return']].reset_index(drop=True),
                                        val_predict], axis = 1)
         
         tra_predict = pd.DataFrame({'prediction':tra_pred})
         tra_predict = pd.concat([df_train[['datetime', 
-                                           'price_change_forward_ratio']].reset_index(drop=True), 
+                                           'price_return']].reset_index(drop=True), 
                                        tra_predict], axis = 1)
         
         val_predict.to_csv("data/xgboost_val_pred.csv", index=False)
@@ -108,7 +107,9 @@ class XGBoostStock():
         # In[plot build in feature importance]
         # best_random.__dir__()
         # plot with sort
+        from matplotlib import pyplot as plt
         sorted_idx = best_random.feature_importances_.argsort()
+        
         plt.barh(np.array(features)[sorted_idx], best_random.feature_importances_[sorted_idx])
         plt.xlabel("Xgboost Feature Importance")
         plt.savefig("assets/xgb_feature_importance.png", bbox_inches='tight')
@@ -121,7 +122,7 @@ class XGBoostStock():
         # variable importace bar
         shap.summary_plot(shap_values, df_train[features], plot_type="bar",
                           show = False)
-        from matplotlib import pyplot as plt
+        
         plt.savefig("assets/xgb_shap_feature_importance.png", bbox_inches='tight',
                     pad_inches=0.2, dpi=300)
         

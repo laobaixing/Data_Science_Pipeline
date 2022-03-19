@@ -34,14 +34,14 @@ class MixedLM():
         
         features = ['average_13_60_down',"RSI_cen" ] #"MACD", 
         
-        df_train = df_train.dropna(subset = ['price_change_forward_ratio'] + features )
-        df_val = df_val.dropna(subset = ['price_change_forward_ratio'] + features )
+        df_train = df_train.dropna(subset = ['price_return'] + features )
+        df_val = df_val.dropna(subset = ['price_return'] + features )
         
         df_train = df_train.loc[~df_train.symbol.isin(["BB", "QS", "AI", "MAXR", "PLTR"])]
         df_val = df_val[~df_val.symbol.isin(["BB", "QS", "AI", "MAXR", "PLTR"])]
         
         # This model is only on the slope
-        formula = 'price_change_forward_ratio ~' + "+".join(features)
+        formula = 'price_return ~' + "+".join(features)
         mlm_mod = sm.MixedLM.from_formula(
             formula = formula, 
             groups = 'symbol', 
@@ -54,11 +54,11 @@ class MixedLM():
         
         # In[Output the model result and prediction]
         val_predict = pd.DataFrame({'prediction':mlm_result.predict(df_val)})
-        val_predict = pd.concat([df_val[['datetime', 'price_change_forward_ratio']], 
+        val_predict = pd.concat([df_val[['datetime', 'price_return']], 
                                        val_predict], axis = 1)
         
         tra_predict = pd.DataFrame({'prediction':mlm_result.predict(df_train)})
-        tra_predict = pd.concat([df_train[['datetime', 'price_change_forward_ratio']], 
+        tra_predict = pd.concat([df_train[['datetime', 'price_return']], 
                                        tra_predict], axis = 1)
         
         val_predict.to_csv("data/mixed_lm_val_pred.csv")

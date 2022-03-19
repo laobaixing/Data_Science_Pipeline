@@ -1,6 +1,7 @@
 """
 
-Generate dashboard for stock
+Generate dashboard for the data
+with stock data as example
 
 
 """
@@ -9,26 +10,86 @@ from dash import Dash, dcc, html, dash_table
 from dash.dependencies import Input, Output, State
 import plotly.graph_objs as go
 from plotly.subplots import make_subplots
+import plotly.express as px   
 from datetime import datetime
 import pandas as pd
+import numpy as np
+
+tabs_styles = { 'height' : '44px'}
+
+tab_style = {
+    'borderBottom': '1px solid #d6d6d6',
+    'padding': '6px',
+    'fontWeight': 'bold'
+    }
+
+tab_selected_style = {
+            'borderTop': '1px solid #d6d6d6',
+            'borderBottom': '1px solid #d6d6d6',
+            'backgroundColor': '#119DFF',
+            'color': 'white',
+            'padding': '6px'
+}    
+
+# set the Div width to fit multiple inputs in a row
+small_div_style = {'display':'inline-block', 
+  'verticalAlign':'top', 'width':'30%'} # 30% mean occupy 30% width of row
+
+H3_style = {'paddingRight':'30px'}
+
+graph_config = {
+      'toImageButtonOptions': {
+        'format': 'svg', # one of png, svg, jpeg, webp
+        'filename': 'custom_image',
+        'height': 500,
+        'width': 700,
+        'scale': 1 # Multiply title/legend/axis/canvas sizes by this factor
+      }
+    }
+
+def html_Div_table (data, id):
+    obj = html.Div([dash_table.DataTable(
+                                    data = data.to_dict('records'), 
+                                    columns = [{"name": i, "id": i} 
+                                               for i in data.columns],
+                                    id= id, 
+                                    export_format="csv")
+        ])
+    return obj
 
 
 class StockDashBoard():
     
-    def stock_chart(self, input_data_file):
+    def EDA(self, input_data_file):
         app = Dash()
         stocks_df = pd.read_csv(input_data_file)
-        stocks_df.index = stocks_df.datetime
-        nsdq = stocks_df['symbol'].unique()
+        stocks_df.datetime = pd.to_datetime(stocks_df.datetime, 
+                                            format = "%Y-%m-%d")
         
-        summary = pd.read_csv('output/summary_variable.csv')        
-        for col in summary.columns[1:]:
-            summary[col] = summary[col].round(2) 
+        summary = stocks_df.describe(datetime_is_numeric=True)  
+        for col in summary.columns:
+            if summary[col].dtype == 'float64':
+                summary[col] = summary[col].round(2) 
+            if col == 'datetime':
+                summary[col][1:] = pd.to_datetime(summary[col][1:], 
+                                                    format = "%Y-%m-%d").dt.date
+        summary = summary.transpose()
+        summary['Missing'] = 1 - summary['count']/stocks_df.shape[0]        
         summary['count'] = [int(x) for x in summary['count']]
-        
+        summary['Missing'] = [str(round(x *100, 2)) + '%' 
+                              for x in summary['Missing']]
+        summary = summary.reset_index().rename(columns = {'index':"var"})
+
+        cate_summary = stocks_df.describe(include = np.object).transpose()   
+        cate_summary['Missing'] = 1 - cate_summary['count']/stocks_df.shape[0]
+        cate_summary['Missing'] = [str(round(x *100, 2)) + '%' 
+                              for x in cate_summary['Missing']]
+        cate_summary = cate_summary.reset_index().rename(columns = {'index':"var"})
+
+
         # In[Find the continuous variable and categorical variable]
 
-        data_types = stocks_df.dtypes.astype(str) # need to change to string for isin
+        data_types = stocks_df.dtypes.astype(str) 
 
         cont_vars = data_types[data_types.isin(["float64", "int64"])].index.to_list()
                                
@@ -41,7 +102,7 @@ class StockDashBoard():
             bivar_res[col] = bivar_res[col].round(3) 
         bivar_res.columns.values[0] = 'predictors'
         
-        
+        nsdq = stocks_df['symbol'].unique()
         # Generate options for stock chart
         options = []
         for tic in nsdq:
@@ -51,92 +112,128 @@ class StockDashBoard():
         cont_var_options = []
         for var in cont_vars:
             cont_var_options.append({'label':'{}'.format(var), 'value':var})
-        
+            
+        cate_var_options = []
+        for var in cate_vars:
+            cate_var_options.append({'label':'{}'.format(var), 'value':var})
+                   
         app.layout = html.Div([
             dcc.Tabs([
                 dcc.Tab(label = 'Stock chart', children = [
-                html.Div([
                     html.Div([
-                        html.H3('Select stock symbols:', style={'paddingRight':'30px'}),
-                        # replace dcc.Input with dcc.Options, set options=options
-                        dcc.Dropdown(
+                        html.Div([
+                            html.H3('Select stock symbols:', style= H3_style),
+                            dcc.Dropdown(
                             id='my_ticker_symbol',
                             options=options,
                             value=['TSLA'],
                             multi=True
-                        )
-                    # widen the Div to fit multiple inputs
-                    ], style={'display':'inline-block', 'verticalAlign':'top', 
-                              'width':'30%'}),
+                            )
+                        ], style= small_div_style),
                               
-                    html.Div([
-                        html.H3('Select start and end dates:'),
-                        dcc.DatePickerRange(
-                            id='my_date_picker',
-                            min_date_allowed=datetime(2017, 1, 1),
-                            max_date_allowed=datetime.today(),
-                            start_date=datetime(2018, 1, 1),
-                            end_date=datetime.today()
-                        )
-                    ], style={'display':'inline-block'}),
+                        html.Div([
+                            html.H3('Select start and end dates:', style = H3_style),
+                            dcc.DatePickerRange(
+                                id='my_date_picker',
+                                min_date_allowed=datetime(2017, 1, 1),
+                                max_date_allowed=datetime.today(),
+                                start_date=datetime(2018, 1, 1),
+                                end_date=datetime.today()
+                            )
+                        ], style={'display':'inline-block'}),
                     
-                    html.Div([
-                        html.Button(
-                            id='submit-button',
-                            n_clicks=0,
-                            children='Update',
-                            style={'fontSize':18, 'marginLeft':'30px'}
-                        ),
-                    ], style={'display':'inline-block'}),
+                        html.Div([
+                            html.Button(
+                                id='submit-button',
+                                n_clicks=0,
+                                children='Update',
+                                style={'fontSize':18, 'marginLeft':'30px'}
+                            ),
+                        ], style= {'display':'inline-block'}),
                     
-                    dcc.Graph(
-                        id='stock_chart',
-                        figure={
-                            'data': [
-                                {'x': [1,2], 'y': [3,1]}
-                            ]
-                        }
-                    )
-                ])
-                ]),
+                        dcc.Graph(id='stock_chart'),
+                    ])
+                ], style = tab_style, selected_style=tab_selected_style),
                 
                 dcc.Tab(label = "Summary", children = [
-                html.Div([
-                    dash_table.DataTable(data = summary.to_dict('records'), 
-                                         columns = [{"name": i, "id": i} 
-                                                    for i in summary.columns],
-                                         id= 'tbl')
-                    ])
-                ]),
+                    dcc.Tabs([
+                        dcc.Tab(label = 'continuous', children = [
+                                html_Div_table(summary, id = 'cont_summary')
+                            ], style = tab_style, selected_style=tab_selected_style), 
+                        dcc.Tab(label = 'categorical', children = [
+                                html_Div_table(cate_summary, id = 'cate_summary')
+                            ], style = tab_style, selected_style=tab_selected_style)
+                        ], style = tabs_styles)
+                    ],style = tab_style, selected_style=tab_selected_style),
                 
                 dcc.Tab(label = "Bivariate analysis", children = [
-                html.Div([
-                    dash_table.DataTable(data = bivar_res.to_dict('records'))
-                    ])
-                ]),
+                    dcc.Tabs([
+                        dcc.Tab(label = 'linear model', children = [
+                               html_Div_table(bivar_res, id = 'bivar_analysis')
+                            ], style = tab_style, selected_style=tab_selected_style),
+                        
+                        dcc.Tab(label = 'Scatter plot', children = [
+                            html.Div([
+                                html.H3('Select continuous variables:', 
+                                        style= H3_style),
+                                
+                                dcc.Dropdown(
+                                    id='continuous_predictors',
+                                    options= cont_var_options,
+                                    value=['open'],
+                                    multi= False
+                                    )   
+                                ], style= small_div_style),
+                                              
+                            dcc.Graph(id = 'bivar_scatter_plot', config = graph_config)
+                                
+                            ], style = tab_style, selected_style=tab_selected_style),
+                        
+                        dcc.Tab(label = 'Box plot', children = [
+                            html.Div([                                
+                                dcc.Graph(id='box_plot') 
+                                ])
+                            ], style = tab_style, selected_style=tab_selected_style)
+                        ])
+                    ], style = tab_style, selected_style=tab_selected_style),
                 
                 dcc.Tab(label = "variable distribution", children = [
-                    html.Div([
-                        html.Div([
-                            html.H3('Select continuous variables:', 
-                                    style={'paddingRight':'30px'}),
-                            dcc.Dropdown(
-                                id='continuous_vars',
-                                options= cont_var_options,
-                                value=['open'],
-                                multi= False
-                            )
-                        # widen the Div to fit multiple inputs
-                        ], style={'display':'inline-block', 
-                                  'verticalAlign':'top', 'width':'30%'}),
-                                               
-                        dcc.Graph(id = 'QQ_plot'),
-                        
-                        dcc.Graph(id='histogram')                        
-                        
-                    ])
-                ])
-            ])
+                    dcc.Tabs([
+                        dcc.Tab(label = 'continuous variables', children = [
+                                html.Div([
+                                    html.H3('Select continuous variables:', 
+                                            style = H3_style),
+                                    dcc.Dropdown(
+                                        id='continuous_vars',
+                                        options= cont_var_options,
+                                        value=['open'],
+                                        multi= False
+                                    )
+                                ], style= small_div_style),
+                                                       
+                                dcc.Graph(id = 'QQ_plot', config = graph_config),                                
+                                dcc.Graph(id='histogram')  
+                                
+                        ], style = tab_style, selected_style=tab_selected_style),
+                                          
+                        dcc.Tab(label = 'categorical variables', children = [
+                            html.Div([
+                                html.H3('Select categorical variables:', 
+                                        style= H3_style),
+                                dcc.Dropdown(
+                                    id='categorical_vars',
+                                    options= cate_var_options,
+                                    value=['MACD_ind'],
+                                    multi= False
+                                )
+
+                                ], style= small_div_style),
+                                                                     
+                                dcc.Graph(id = 'bar_plot', config = graph_config)                                                                     
+                        ], style = tab_style, selected_style=tab_selected_style)
+                    ], style= tabs_styles)
+                ], style = tab_style, selected_style=tab_selected_style)
+            ], style= tabs_styles)
         ])
         
         @app.callback(
@@ -155,20 +252,19 @@ class StockDashBoard():
             for i, tic in enumerate(stock_ticker):                
                 df = stocks_df[stocks_df['symbol'] == tic]
                 df = df[(df['datetime'] > start) & (df['datetime'] < end)] 
-                traces.append(go.Scatter(x= df.index, y = df.close, name= tic+' close'))
+                traces.append(go.Scatter(x= df.datetime, y = df.close, name= tic+' close'))
                 if i == 0:
-                    traces.append(go.Bar(x= df.index, y = df.volume,opacity=0.65,
+                    traces.append(go.Bar(x= df.datetime, y = df.volume,opacity=0.65,
                                      name= tic+' volume'))
                 
             fig = make_subplots(specs=[[{"secondary_y": True}]])
             
             for i, trace in enumerate(traces):
                 if i == 1:
-                   fig.add_trace(traces[1],secondary_y = True) 
+                    fig.add_trace(traces[1],secondary_y = True) 
                 else:
                     fig.add_trace(trace,secondary_y = False)                
             
-            # Add figure title
             fig.update_layout(
                 title_text= ', '.join(stock_ticker)
             )
@@ -180,8 +276,6 @@ class StockDashBoard():
             Output('histogram', 'figure'),            
             Input('continuous_vars', 'value'))
         def update_histogram(variable):
-            traces = []
-            traces.append(go.Histogram(x = stocks_df[variable]))
                            
             from statsmodels.graphics.gofplots import qqplot
             
@@ -227,15 +321,45 @@ class StockDashBoard():
                 'showlegend': False,
             })
             
-            fig2 = {
-                # set data equal to traces
-                'data': traces,
-                # use string formatting to include all symbols in the chart title
-                'layout': {'title': variable +' histogram'}
-            }
+            fig2 = px.histogram(stocks_df, variable)
             
             return fig1, fig2
 
-        
+        @app.callback(
+            Output('bivar_scatter_plot', 'figure'),  
+            Input('continuous_predictors', 'value'))
+        def update_scatterplot(variable):
+                                     
+            df = stocks_df.dropna(subset=['log_price_return', variable])
+            
+            fig = px.scatter(df, x = variable, y = 'log_price_return', 
+                             trendline= 'ols', trendline_color_override= 'orange')
+            
+            fig['layout'].update({
+                'title': 'Predictor vs log return',
+                'xaxis': {
+                    'title': variable,
+                    'zeroline': False
+                },
+                'yaxis': {
+                    'title': 'Log Return'
+                },
+                'showlegend': False,
+            })
+                
+            return fig
+
+        @app.callback(
+            Output('bar_plot', 'figure'),  
+            Input('categorical_vars', 'value'))
+        def update_barplot(variable):                      
+            perc = stocks_df.reset_index().groupby(variable, dropna=False)['index'].agg(['count'])
+            perc = perc.reset_index()
+            
+            fig = px.bar(perc, x= variable, y= 'count')
+                           
+            return fig       
+
         app.run_server(port = 8050)
+        
         

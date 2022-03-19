@@ -15,7 +15,7 @@ from tqdm import tqdm
 
 from data_processing.generate_variables import (get_ta_lib_indicator, 
                              add_ts_indicators, 
-                             priceChangeForward,
+                             priceReturn,
                              get_ext_indicator)
 
 
@@ -31,7 +31,7 @@ class ProcessStockData():
             df = stock_dic[stock].copy()
             df = get_ta_lib_indicator(df)  
             df = add_ts_indicators(df)
-            df = priceChangeForward(df, DAYS_PRED, 'close')      
+            df = priceReturn(df, DAYS_PRED, 'close')      
             
             if count == 0:
                 stocks_df = df

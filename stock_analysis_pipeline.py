@@ -64,7 +64,7 @@ class BivarAnalysis(luigi.Task):
     def run(self):
         task = StockBivariateAnalysis()
         task.bivar_analysis(input_data_file = "data/stock_price.csv",
-                            output_file = 'output/stock_univar_analysis.xlsx')
+                            output_file = 'output/stock_bivar_analysis.xlsx')
         
         with self.output().open('w') as out_file:
             out_file.write('Complete')
@@ -79,7 +79,7 @@ class DataDashBoard(luigi.Task):
     
     def run(self):
         task = StockDashBoard()
-        task.stock_chart(input_data_file = 'data/stock_price.csv')
+        task.EDA(input_data_file = 'data/stock_price.csv')
         
         with self.output().open('w') as out_file:
             out_file.write('Complete')
@@ -117,8 +117,8 @@ class MixedModel(luigi.Task):
 
 class ModelDashBoard(luigi.Task):
     def requires(self):
-        # return [MixedModel(), XGBoostModel(), BivarAnalysis()]
-        return None
+        return [MixedModel(), XGBoostModel(), BivarAnalysis()]
+        # return None
     
     def output(self):
         return luigi.LocalTarget('log/ModelDashBoard_%s.txt' 
@@ -146,6 +146,6 @@ class ModelDashBoard(luigi.Task):
 
 
 if __name__ == '__main__':
-    luigi.build([ ModelDashBoard()],
+    luigi.build([ DataDashBoard(), ModelDashBoard()],
                 workers=4) # 
     # luigi.run() DataDashBoard(),
