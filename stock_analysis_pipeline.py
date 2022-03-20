@@ -36,8 +36,8 @@ class GetStockData(luigi.Task):
 
 class ProcessData(luigi.Task):
     def requires(self):
-        # return GetStockData()
-        return None
+        return GetStockData()
+       # return None
     
     def output(self):
         return luigi.LocalTarget("log/ProcessData_%s.txt" 

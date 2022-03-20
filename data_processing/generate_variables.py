@@ -98,6 +98,8 @@ def add_ts_indicators(df):
 
 def get_ext_indicator(df):
     # These indicator don't need the time series data
+    df['day_high_low_diff'] = df['high'] - df['low']
+    
     df['RSI_ind'] = pd.cut(df.RSI, [0, 25, 50, 75, 100], 
                            labels=["RSI_1", "RSI_2", "RSI_3", "RSI_4"])
     df["MACD_ind"] =  pd.cut(df.MACD_ewm9, [-math.inf, -5, 0, 10, math.inf], 

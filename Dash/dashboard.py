@@ -96,7 +96,6 @@ class StockDashBoard():
         cate_vars = data_types[data_types == 'object'].index.to_list()
         cate_vars = cate_vars[2:]
         
-        
         bivar_res = pd.read_excel('output/stock_bivar_analysis.xlsx')
         for col in bivar_res.columns[1:]:
             bivar_res[col] = bivar_res[col].round(3) 
