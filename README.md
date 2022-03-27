@@ -51,7 +51,7 @@
 - Exploratory data analysis demonstrated by Python Dash
 <img src = ./img/EDA.png width=90% height=90%>
 - Model evaluation demonstrated by Python Dash <br />   
-<img src =./img/Xgb_evaluate.png width=90% height=90%>
+<img src =./img/Xgb_evaluate.png width=90% height=50%>
 
 
 
