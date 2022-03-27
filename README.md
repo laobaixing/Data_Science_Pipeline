@@ -1,5 +1,5 @@
 # Stock Analysis
-> This project builds a pipeline to automatically update and analyze stock. It manages the whole data processing, analyzing and modeling through Luigi and demonstrates the results through Python Dash and other methods. Please note, the aim of the project is to provide a pipeline for general data science analysis instead of a solution for stock trading.
+> This project builds a pipeline to automatically update and analyze stock. It manages the whole data processing, analyzing and modeling through Luigi and demonstrates the results through Python Dash and other methods. Please note, the aim of the project is to provide a pipeline for general data science instead of a solution for stock trading.
 
 
 ## Table of Contents
@@ -50,9 +50,8 @@
 <img src = ./img/luigi_workflowD3.png width=90% height=90%>
 - Exploratory data analysis by Python Dash
 <img src = ./img/EDA.png width=90% height=90%>
-- Residual plots demonstrated by Python Dash with Tabs <br />   
-Apparently the model results are not good enough.
-<img src =./img/Residuals.png width=90% height=90%>
+- Model evaluation by Python Dash <br />   
+<img src =./img/Xgb_evaluate.png width=90% height=90%>
 
 
 
