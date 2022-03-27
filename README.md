@@ -1,5 +1,5 @@
-# Stock Analysis
-> This project builds a pipeline to automatically update and analyze stock. It manages the whole data processing, analyzing and modeling through Luigi and demonstrates the results through Python Dash and other methods. Please note, the aim of the project is to provide a pipeline for general data science instead of a solution for stock trading.
+# Data science pipeline
+> This project builds a pipeline to automatically conduct and monitor data science approaches. It manages the whole data processing, analyzing and modeling through Luigi and demonstrates the results through Python Dash and other methods. Currently, this project uses stock data as an example. 
 
 
 ## Table of Contents
