@@ -13,7 +13,7 @@ from EDA import stock_bivar_analysis
 from Dash import dashboard
 from model_building.mixed_LM import MixedLM
 from model_building.stock_xgboost import XGBoostStock
-from model_evaluation.evaluate_model import ModelEvaluation
+from model_evaluation import evaluate_model
 from multiprocessing import Process
 
 
@@ -134,10 +134,10 @@ class ModelDashBoard(luigi.Task):
 
     def run(self):
 
-        mix_task = ModelEvaluation("Mixed", "data/mixed_lm_val_pred.csv",
+        mix_task = evaluate_model.ModelEvaluation("Mixed", "data/mixed_lm_val_pred.csv",
                                    "data/mixed_lm_tra_pred.csv")
 
-        xgb_task = ModelEvaluation("XGBoost", "data/xgboost_val_pred.csv",
+        xgb_task = evaluate_model.ModelEvaluation("XGBoost", "data/xgboost_val_pred.csv",
                                    "data/xgboost_tra_pred.csv")
 
         p1 = Process(target=mix_task.residual, args=(8000, ))

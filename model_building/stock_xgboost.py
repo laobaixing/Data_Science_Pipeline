@@ -43,12 +43,9 @@ class XGBoostStock():
         # - SHAP
 
         features = [
-            'ma13', 'ma60', 'ma200', 'RSI', 'MACD', 'MACD_ewm9', 'MACD_diff',
-            'average_13_60_down', "MACD_ind_MACD_2", "MACD_ind_MACD_3",
-            "MACD_ind_MACD_4", "RSI_ind_RSI_2", "RSI_ind_RSI_3",
-            "RSI_ind_RSI_4", 'ad', 'SAR_diff', 'mfi', 'upperband', 'lowerband',
-            'ma13_diff_ratio', 'ma60_diff_ratio', 'ma200_diff_ratio',
-            'B_upper_band_diff', 'B_lower_band_diff'
+            'RSI', 'average_13_60_down', "RSI_ind_RSI_2", "RSI_ind_RSI_3",
+            "RSI_ind_RSI_4", 'mfi', 'SAR_diff_ind', 
+            'ma13_diff_ratio', 'ma60_diff_ratio', 'ma200_diff_ratio'
         ]
 
         df_train = df_train.dropna(subset=['price_return'] + features)
