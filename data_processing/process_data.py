@@ -9,14 +9,12 @@ Output:
     
 """
 
-
 import pickle
 from tqdm import tqdm
 
-from data_processing.generate_variables import (get_ta_lib_indicator, 
-                             add_ts_indicators, 
-                             priceReturn,
-                             get_ext_indicator)
+from data_processing.generate_variables import (get_ta_lib_indicator,
+                                                add_ts_indicators, priceReturn,
+                                                get_ext_indicator)
 
 
 # In[Generate dependent variables and features]
@@ -27,17 +25,17 @@ class ProcessStockData():
 
         DAYS_PRED = 5
         for count, stock in enumerate(tqdm(stock_dic)):
-            
+
             df = stock_dic[stock].copy()
-            df = get_ta_lib_indicator(df)  
+            df = get_ta_lib_indicator(df)
             df = add_ts_indicators(df)
-            df = priceReturn(df, DAYS_PRED, 'close')      
-            
+            df = priceReturn(df, DAYS_PRED, 'close')
+
             if count == 0:
                 stocks_df = df
             else:
                 stocks_df = stocks_df.append(df)
-               
-        stocks_df = get_ext_indicator(stocks_df)        
-        
-        stocks_df.to_csv(output_data_file, index = False)
+
+        stocks_df = get_ext_indicator(stocks_df)
+
+        stocks_df.to_csv(output_data_file, index=False)

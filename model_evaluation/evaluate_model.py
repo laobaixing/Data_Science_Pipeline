@@ -11,7 +11,7 @@ Output:
 
 import pandas as pd
 import numpy as np
-from sklearn.metrics import mean_squared_error
+from sklearn import metrics
 
 class ModelEvaluation():
     def __init__(self, model, val_pred_file = None, tra_pred_file = None):
@@ -25,10 +25,10 @@ class ModelEvaluation():
     
         # In[RMSE]
         
-        val_rmse = round(mean_squared_error(self.val_predict['prediction'], 
+        val_rmse = round(metrics.mean_squared_error(self.val_predict['prediction'], 
                                        self.val_predict.price_return,
                                        squared = False), 4)
-        tra_rmse = round(mean_squared_error(self.tra_predict['prediction'], 
+        tra_rmse = round(metrics.mean_squared_error(self.tra_predict['prediction'], 
                                        self.tra_predict.price_return,
                                        squared = False),4)
         
